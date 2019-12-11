@@ -5,6 +5,7 @@
 <title>Untitled Document</title>
 </head>
 <?php
+session_start (); 
 require('User.php') ;
 $c=new Database();
 $conn=$c->connexion();
@@ -17,13 +18,14 @@ if (!empty($_POST['email'])){
 		$vide=true;
 	if ($t['email']==$_POST['email'])
 	{	
-		$subject = "My subject";
+		$email = $_POST['email'] ;
+		$subject = "Kimolu";
 		$txt = "Create new account!";
 		$headers = "From: donotreply@fmt.com" . "\r\n" .
 		"CC: somebodyelse@example.com";
 		mail($email,$subject,$txt,$headers); 
 		echo '<body onLoad="alert(\'Mail envoyée\')">';
-		echo '<meta http-equiv="refresh" content="0;URL=index.html">';
+		echo '<meta http-equiv="refresh" content="0;URL=index.php">';
 
 		
 		}

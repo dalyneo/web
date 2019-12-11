@@ -75,10 +75,11 @@ if (isset($_GET['del']))
 			<!-- Cart -->
 			<ul class="top-menu text-right list-inline">
 	          <li class="dropdown cart-nav dropdown-slide">
-	            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"><i class="tf-ion-android-cart"></i></a>
+	            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"><i class="tf-ion-ios-heart"></i></a>
 	            <div class="dropdown-menu cart-dropdown">
 	            	<!-- Cart Item -->
 					<form method="post" action="header.php">
+						<h3 align="center">My favorite</h3>
 					<?PHP
 					$ids = array_keys($_SESSION['panier']) ;
 					if(empty($ids))
@@ -96,10 +97,6 @@ if (isset($_GET['del']))
 	            		</a>
 	            		<div class="media-body">
 	            			<h4 class="media-heading"><?PHP echo $product->name; ?></h4>
-	            			<div class="cart-price">
-                              <span><?= $_SESSION['panier'][$product->id];?> x</span>
-                              <span><?PHP echo number_format($product->price,2,',',' '); ?>D</span>
-                            </div>
 	            		</div>
                         <a href="header.php?del=<?= $product->id ; ?>" class="remove"><i class="tf-ion-close"></i></a>
 	            	</div><!-- / Cart Item -->
@@ -146,8 +143,12 @@ if (isset($_GET['del']))
 	          <!-- Home -->
 	          <li class="dropdown ">
 	            <a href="index.html">Home</a>
+				
 	          </li><!-- / Home -->
-
+				
+				<li class="dropdown">
+					<a href="video.php">Videos</a>
+				</li>
 
 	          <!-- Elements -->
 	          <li class="dropdown dropdown-slide">
@@ -162,8 +163,11 @@ if (isset($_GET['del']))
 							<li role="separator" class="divider"></li>
 							<li><a href="shop.php">Shop</a></li>
 							<li><a href="checkout.php">Checkout</a></li>
-	                		
 	                	</ul>
+	                </div>
+					     <!-- Layout -->
+	                <div class="col-lg-6 col-md-6 mb-sm-3">
+	                	
 	                </div>
 	              </div><!-- / .row -->
 	            </div><!-- / .dropdown-menu -->

@@ -12,10 +12,8 @@ if (isset($_GET['id']))
 	}
 	$panier->add($product[0]->id) ;
 }
-else
-{
-	die("Vous n'avez pas selectionné de produit a ajouter au panier") ;
-}
+
+
 ?>
 <!-- Page Wrapper -->
 <section class="page-wrapper success-msg">

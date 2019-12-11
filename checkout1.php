@@ -1,5 +1,5 @@
 <?php
-session_start ();  
+require '_header.php'; 
 //require_once "connexion.php" ;
 include "../../Core/lignecommandeC.php"; 
 //require_once "../../Core/commandeC.php"; 
@@ -16,13 +16,11 @@ header('Location:login.html');
 }
 if(isset($_GET['ajout_id']))
   {
-   
+   		
 		$id_client=$_SESSION['i'];
         $dateCommande= date("Y-m-d");
         $prix_total=$_SESSION['prix_total'];
 	  $test=true;
-
-
     if($test==true)
 	{
           $commande =new commande($id_client,$dateCommande,$prix_total);
@@ -35,8 +33,6 @@ if(isset($_GET['ajout_id']))
                 }      
 
      $ldcc=new ligneCommandeC();
-              
-
              	$qteProduit=$_SESSION['quantity'];
                 $prixProduit=$_SESSION['price'];
                 $id_produit=$_SESSION['product_id'];
@@ -44,8 +40,6 @@ if(isset($_GET['ajout_id']))
                 $ldcc->ajouterlignecommandes($ldc);
    				unset($_SESSION['panier']);
 	}
-
-
 }
 require 'header.php';
 ?>
@@ -88,8 +82,9 @@ require 'header.php';
                           <td><?= $panier->total();?>D</td>
                         </tr>
 						  </tfoot>
+					
                 </table>
-			  <a href="checkout1.php?ajout_id=true" class="btn btn-main pull-right">Place order</a>
+					 <a href="checkout1.php?ajout_id=true" class="btn btn-main pull-right">Place order</a>
             </div>
           </div>
         </div>
@@ -97,7 +92,5 @@ require 'header.php';
     </div>
   </div>
 </div>
-
-
 <?php require 'footer.php';?>
 

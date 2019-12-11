@@ -1,5 +1,5 @@
 <?php 
-require_once ('config.php') ;
+//require_once ('config.php') ;
 include('dbconfig.php') ;
 class User
 {
@@ -7,7 +7,9 @@ class User
     private $pwd;
 	private $role;
     public $conn;	
-
+	private $nom ;
+	private $prenom ;
+	private $email ;
 	public function __construct($login,$pwd,$conn)
 	{
 		$this->login=$login;
@@ -15,6 +17,18 @@ class User
 		$c=new Database();
 		$this->conn=$c->connexion();
 		
+	}
+	function getnom()
+	{
+		return $this->nom ;
+	}
+	function getprenom()
+	{
+		return $this->prenom ;
+	}
+	function getemail()
+	{
+		return $this->email ;
 	}
 	function getLog()
 	{
@@ -30,7 +44,26 @@ class User
 		return $this->role;
 		
 	}
-
+		public function setnom($nom)
+	{
+		$this->nom=$nom ;
+	}
+		public function setprenom($prenom)
+	{
+		$this->prenom=$prenom ;
+	}
+		public function setLog($login)
+	{
+		$this->login=$login ;
+	}
+		public function setemail($email)
+	{
+		$this->email=$email ;
+	}
+	public function setPWD($pwd)
+	{
+		$this->pwd=$pwd ;
+	}
 	public function Logedin($conn,$login,$pwd)
 	{
 		$req="select * from users where login='$login' && pwd='$pwd'";
@@ -89,7 +122,28 @@ class UserEmail
 	}
 	
 }
-
+class UserNum
+{
+	private $numero ;
+	public $conn ;
+	public function setnumero($numero)
+	{
+		$this->numero=$numero ;
+	}
+	public function __construct($numero)
+	{
+		$this->numero=$numero ;
+		$c=new Database();
+		$this->conn=$c->connexion();
+	}
+		public function LogedinF($conn,$numero)
+	{
+		$req="select * from users where numero='$numero'";
+		$rep=$conn->query($req);
+		return $rep->fetchAll();
+	}
+	
+}
 class Reclamation
 {
 	private $nom ;

@@ -23,6 +23,43 @@ class UserC
 			return false ;
         }
 	}
+	function AfficherSign($User)
+	{
+		echo "nom: ".$User->getnom()."<br>";
+		echo "prenom: ".$User->getprenom()."<br>";
+		echo "login: ".$User->getlog()."<br>";
+		echo "email: ".$User->getemail()."<br>";
+		echo "pwd: ".$User->getPWD()."<br>";
+	}
+	function afficher_Sign_return()
+	{
+		require_once "config.php" ;
+		$sql="SElECT * From users";
+		$db = config::getConnexion();
+		try{
+		$liste=$db->query($sql);
+		return $liste;
+		}
+		catch (Exception $e)
+		{
+            die('Erreur: '.$e->getMessage());
+        }
+		
+	}
+	function supprimer($User)
+	{ 
+		$sql="DELETE FROM users where nom= :nom";
+		$db = config::getConnexion();
+        $req=$db->prepare($sql);
+		$req->bindValue(':nom',$nom);
+		try{
+            $req->execute();
+        }
+        catch (Exception $e)
+		{
+            die('Erreur: '.$e->getMessage());
+        }
+	}
 }
 class ReclamationC
 {

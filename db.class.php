@@ -6,6 +6,8 @@ class DB
 	private $password='';
 	private $database='web_esprit';
 	private $db ;
+	private static $instance = NULL;
+
 	public function __construct($host = null ,$username = null , $password = null , $database = null)
 	{
 		if($host != null)

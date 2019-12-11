@@ -41,7 +41,7 @@ include "../../Core/commandeC.php";
         <div class="col-md-8 col-md-offset-2">
           <div class="block">
             <div class="product-list">
-              <form method="post">
+              <form method="post" action="checkout.php">
                 <table class="table">
                   <thead>
                     <tr>
@@ -67,11 +67,11 @@ include "../../Core/commandeC.php";
                     <tr class=" ">
                       <td class="">
                         <div class="product-info">
-                          <img src="images/shop/<?= $product->id; ?>.jpg" />
+                          <img src="images/shop/products/<?= $product->photo; ?>" />
                           <?PHP echo $product->name; ?>
                         </div>
                       </td>
-                      <td class="product-quantity"><input type="number" min="1" max="100" name ="panier[quantity][<?=$product->id; ?>]" value="<?= $_SESSION['panier'][$product->id]; ?>"></td>
+                      <td class="product-quantity"><input type="number" min="1" max="<?=$product->quantity; ?>" name ="panier[quantity][<?=$product->id; ?>]" value="<?= $_SESSION['panier'][$product->id]; ?>"></td>
 						
 						
 						<td class=""><?PHP echo number_format($product->price,2,',',' '); ?>D</td>
@@ -80,19 +80,19 @@ include "../../Core/commandeC.php";
                       </td>
                     </tr>
 					  <?php 
+			$_SESSION['name']=$product->name ;
             $_SESSION['quantity']=$_SESSION['panier'][$product->id];
             $_SESSION['price']=$product->price; 
             $_SESSION['product_id']=$product->id; 
-
           endforeach; ?>
                   </tbody>
                 </table>
 				<div align="center">Prix Total : <?PHP echo number_format($panier->total(),2,',',' ') ; ?>D </div>
-				  <a href="checkout1.php?prix_total=<?= $panier->total(); ?>" class="btn btn-main pull-right">Checkout</a>
+				  <input type="submit" value="Recalculer" class="btn btn-main pull-centre"><br>
               </form>
+				<a href="checkout1.php?prix_total=<?= $panier->total(); ?>" class="btn btn-main pull-right">Checkout</a>
 			<?php
 $_SESSION['prix_total']=$panier->total();
-
 ?>
             </div>
           </div>

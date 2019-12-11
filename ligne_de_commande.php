@@ -1,7 +1,11 @@
 <?PHP
+include 'vendor/autoload.php';
+		use Twilio\Rest\Client;
 session_start (); 
 include "../../Core/commandeC.php";
-//include 'db.php';
+require_once('../../Views/Frontoffice/User.php') ;
+//include "../../Views/Frontoffice/fake_email.php" ;
+//include 'db.php'; 
 $commandeC=new CommandeC();
 $listeCommande=$commandeC->affichercommandes();
 //var_dump($listeEmployes->fetchAll());
@@ -19,6 +23,33 @@ if(isset($_GET['del_id']))
   {
     $commandeC->supprimercommandes($_GET['del_id']);
   $result='<div class="alert alert-danger">commande $_GET[del_id] deleted </div>';
+}
+if(isset($_GET['envoyer']))
+{
+	$result=$commandeC->chercher($_GET['envoyer']);
+                foreach ($result as $value) 
+                {
+                     $email =$value['email'];
+                } 
+	var_dump($email) ;
+$c=new Database();
+$conn=$c->connexion();
+$user=new UserEmail($email,$conn);
+$u=$user->LogedinF($conn,$email);
+	foreach($u as $t){
+	if ($t['email']==$email)
+	{	
+		$nvemail = $email;
+		$subject = "Kimolu";
+		$txt = "Create new account!";
+		$headers = "From: donotreply@fmt.com" . "\r\n" .
+		"CC: somebodyelse@example.com";
+		mail($email,$subject,$txt,$headers); 
+		echo '<body onLoad="alert(\'Mail envoyée\')">';
+		echo '<meta http-equiv="refresh" content="0;URL=ligne_de_commande.php">';
+		}
+	
+}
 }
 
 ?>
@@ -161,13 +192,32 @@ if(isset($_GET['del_id']))
         </ol>
 
         <!-- DataTables Example -->
+		  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav mr-lg-4 w-100">
+          <form  action="search.php">
+          <li class="nav-item nav-search d-none d-lg-block w-100">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder="Search now" aria-label="search" name="search" aria-describedby="search">
+            </div>
+          </li>
+        </form>
+        </ul>
+		  </div>
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
             Ligne de Commande</div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+					
+							<a href="statistique.php" id="pdf" name="generate_pdf" class="btn btn-primary">generate statistique</a>
+					
                 <thead>
                   <tr>
                     		 <th>NUM Commande</th>
@@ -176,11 +226,15 @@ if(isset($_GET['del_id']))
                             <th>Prix Total</th>
                             <th>Etat</th>
                             <th>Modifier Etat</th>
+					  		<th>Supprimer une commande</th>
+					  		<th>Envoyer un email</th>
                   </tr>
                 </thead>
                 <tbody>
 					<?PHP
+					$total = 0 ;
   foreach($listeCommande as $row){
+	  $total ++ ;
   ?>
 
 
@@ -205,15 +259,30 @@ if(isset($_GET['del_id']))
                             </form>
                         </td>
                   <td><a href="ligne_de_commande.php?del_id=<?PHP echo $row['idCommande']; ?>" class="btn btn-danger navbar-btn">Supprimer</a></td>
+			<td><a href="ligne_de_commande.php?envoyer=<?PHP echo $row['id_client']; ?>" class="btn btn-danger navbar-btn">Envoyée un mail</a></td>
  
-  
                         </tr>
                        
            <?PHP
 }?>
                 </tbody>
               </table>
-				
+	  <p  align="center">
+		  Total de commande : <?PHP echo $total; ?></p>
+							
+				<div>
+					<form class="form-inline" method="post" action="generate_pdf.php">
+						<button type="submit"  id="pdf" name="generate_pdf" class="btn btn-primary"><i class="fa fa-pdf"" aria-hidden="true"></i>
+							Generate PDF</button>
+						</form>
+	  			</div>
+							<br>
+							<div>
+					<form class="form-inline" method="post" action="Topclients.php">
+						<button type="submit"  id="pdf" name="generate_pdf" class="btn btn-primary"><i class="fa fa-pdf"" aria-hidden="true"></i>
+							Top 3 clients</button>
+						</form>
+	  			</div>
             </div>
           </div>
         </div>
@@ -222,13 +291,7 @@ if(isset($_GET['del_id']))
       <!-- /.container-fluid -->
 
       <!-- Sticky Footer -->
-      <footer class="sticky-footer">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright © Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
+     
 
     </div>
     <!-- /.content-wrapper -->

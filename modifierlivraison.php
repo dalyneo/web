@@ -1,13 +1,21 @@
-<?php 
-$connect = mysqli_connect("localhost", "root", "", "web_esprit");
-$query = "SELECT * FROM commande";
-$result = mysqli_query($connect, $query);
-$chart_data = '';
-while($row = mysqli_fetch_array($result))
-{
- $chart_data .= "{ id_client:'".$row["id_client"]."', idCommande:".$row["idCommande"]."}, ";
-}
-$chart_data = substr($chart_data, 0, -2);
+<?PHP
+include "../../Entites/livraison.php";
+include "../../Core/livraisonC.php";
+if (isset($_GET['id'])){
+  $livraisonC=new livraisonC();
+  $result=$livraisonC->recupererlivraison($_GET['id']);
+  foreach($result as $row){
+    $id=$row['id'];
+  $nom=$row['nom'];
+  $prenom=$row['prenom'];
+  $Pays=$row['Pays'];
+  $tel=$row['tel'];
+  $date_livraison=$row['date_livraison'];
+  $email=$row['email'];
+  $adresse=$row['adresse'];
+  
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,11 +27,8 @@ $chart_data = substr($chart_data, 0, -2);
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-  <title>SB Admin - Charts</title>
+
+  <title>SB Admin - Tables</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -125,12 +130,12 @@ $chart_data = substr($chart_data, 0, -2);
           <a class="dropdown-item" href="blank.html">Blank Page</a>
         </div>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="charts.html">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>
           <span>Tables</span></a>
@@ -141,18 +146,125 @@ $chart_data = substr($chart_data, 0, -2);
 
       <div class="container-fluid">
 
-        <!-- Area Chart Example-->
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Tables</li>
+        </ol>
+
+        <!-- DataTables Example -->
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fas fa-chart-area"></i>
-            statistique de commande</div>
+            <i class="fas fa-table"></i>
+            Data Table Example</div>
           <div class="card-body">
-           
+            <div class="table-responsive">
+            <form method="POST">
+<table>
+<caption>Modifier livraison</caption>
+<tr>
+<td>id</td>
+<td><input type="number" name="id" value="<?PHP echo $id ?>"></td>
+</tr>
+<tr>
+<td>nom</td>
+<td><input type="text" name="nom" value="<?PHP echo $nom ?>"></td>
+</tr>
+<tr>
+  <td>prenom</td>
+  <td><input type ="text" name="prenom"value="<?PHP echo $prenom ?>"></td>
+</tr>
+<tr>
+  <td>Pays</td>
+  <td><input type ="text" name="Pays"value="<?PHP echo $Pays ?>"></td>
+</tr>
+<tr>
+  <td>tel</td>
+  <td><input type ="number" name="tel"value="<?PHP echo $tel ?>"></td>
+</tr>
+<tr>
+  <td>date de livraison </td>
+  <td><input type ="date" name="date_livraison"value="<?PHP echo $date_livraison ?>"></td>
+</tr>
+<tr>
+<td>email</td>
+<td><input type="text" name="email" value="<?PHP echo $email ?>"></td>
+</tr>
+<tr>
+<td>adresse</td>
+<td><input type="text" name="adresse" value="<?PHP echo $adresse ?>"></td>
+</tr>
+
+  <tr>
+  <td><input type="submit" name="modifier" value="modifier"></td>
+  </tr>
+<td></td>
+<td><input type="hidden" name="idd" value="<?PHP echo $_GET['id'];?>"></td>
+</tr>
+</table>
+</form>
+<?PHP
+  }
+}
+if (isset($_POST['modifier'])){
+  $livraison=new livraison($_POST['id'],$_POST['nom'],$_POST['prenom'],$_POST['Pays'],$_POST['tel'],$_POST['date_livraison'],$_POST['email'],$_POST['adresse']);
+  $livraisonC->modifierlivraison($livraison,$_POST['idd']);
+  echo $_POST['idd'];
+ 
+}
+?>
+            </div>
           </div>
-        
+          <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
         </div>
 
-       
+        <p class="small text-center text-muted my-5">
+          <em>More table examples coming soon...</em>
+        </p>
+
+      </div>
+      <!-- /.container-fluid -->
+
+      <!-- Sticky Footer -->
+      <footer class="sticky-footer">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright © Your Website 2019</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -162,27 +274,15 @@ $chart_data = substr($chart_data, 0, -2);
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Page level plugin JavaScript-->
-  <script src="vendor/chart.js/Chart.min.js"></script>
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
 
   <!-- Demo scripts for this page-->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-bar-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
+  <script src="js/demo/datatables-demo.js"></script>
 
 </body>
 
 </html>
-<script>
-Morris.Bar({
- element : 'chart',
- data:[<?php echo $chart_data; ?>],
- xkey:'id_client',
- ykeys:['idCommande'],
- labels:'commande',
- hideHover:'Date',
- stacked:true
-});
-</script>

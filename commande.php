@@ -1,11 +1,13 @@
 <?PHP
 class commande{
 	private $idCommande;
+	private $email ;
 	private $id_client;
 	private $dateCommande;
 	private $prix_total;
 	private $quantity;
 	private $etat ;
+	//private $code ;
 	function __construct($id_client,$dateCommande,$prix_total)
 	{
 		$this->id_client=$id_client;
@@ -31,6 +33,9 @@ class commande{
 	function getetat(){
 		return $this->etat;
 	}
+	/*function getcode(){
+		return $this->code;
+	}*/
 
 	function setidCommande($idCommande){
 		$this->idCommande=$idCommande;
@@ -50,6 +55,9 @@ class commande{
 	function setetat($etat){
 		$this->etat=$etat;
 	}
+	/*function setetat($code){
+		$this->code=$code;
+	}*/
 	
 }
 

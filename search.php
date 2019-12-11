@@ -1,14 +1,34 @@
-<?php 
-$connect = mysqli_connect("localhost", "root", "", "web_esprit");
-$query = "SELECT * FROM commande";
-$result = mysqli_query($connect, $query);
-$chart_data = '';
-while($row = mysqli_fetch_array($result))
-{
- $chart_data .= "{ id_client:'".$row["id_client"]."', idCommande:".$row["idCommande"]."}, ";
+<?PHP
+session_start (); 
+include "../../core/commandeC.php";
+//include 'db.php';
+$commandeC=new CommandeC();
+$listeCommande=$commandeC->affichercommandes();
+//var_dump($listeEmployes->fetchAll());
+
+
+$result='';
+
+
+
+
+if(isset($_GET['new_etat'])){
+$commandeC->modifieretat($_GET['id'],$_GET['new_etat']);
 }
-$chart_data = substr($chart_data, 0, -2);
+
+if(isset($_GET['del_id']))
+  {
+    $commandeC->supprimercommandes($_GET['del_id']);
+  $result='<div class="alert alert-danger">commande $_GET[del_id] deleted </div>';
+}
+
+if(isset($_GET['search']))
+{
+$listeCommande=$commandeC->recherchercommandes($_GET['search']);
+}
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,11 +39,8 @@ $chart_data = substr($chart_data, 0, -2);
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-  <title>SB Admin - Charts</title>
+
+  <title>SB Admin - Ligne de commandes</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -125,12 +142,12 @@ $chart_data = substr($chart_data, 0, -2);
           <a class="dropdown-item" href="blank.html">Blank Page</a>
         </div>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="charts.html">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>
           <span>Tables</span></a>
@@ -141,18 +158,129 @@ $chart_data = substr($chart_data, 0, -2);
 
       <div class="container-fluid">
 
-        <!-- Area Chart Example-->
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Tables</li>
+        </ol>
+
+        <!-- DataTables Example -->
+		  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav mr-lg-4 w-100">
+          <form  action="search.php">
+          <li class="nav-item nav-search d-none d-lg-block w-100">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="search">
+                  <i class="mdi mdi-magnify"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder="Search now" aria-label="search" name="search" aria-describedby="search">
+            </div>
+          </li>
+        </form>
+        </ul>
+		  </div>
         <div class="card mb-3">
           <div class="card-header">
-            <i class="fas fa-chart-area"></i>
-            statistique de commande</div>
+            <i class="fas fa-table"></i>
+            Ligne de Commande</div>
           <div class="card-body">
-           
-          </div>
-        
-        </div>
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    		 <th>NUM Commande</th>
+                            <th>ID Client</th>
+                            <th>Date</th>
+                            <th>Prix Total</th>
+                            <th>Etat</th>
+                            <th>Modifier Etat</th>
+                  </tr>
+                </thead>
+                <tbody>
+				<?PHP
+  foreach($listeCommande as $row){
+  ?>
 
-       
+
+                        <tr>
+                            <td><?PHP echo $row['idCommande']; ?></td>
+                            <td><?PHP echo $row['id_client']; ?></td>
+                            <td><?PHP echo $row['dateCommande']; ?></td>
+                            <td>$<?PHP echo $row['prix_total']; ?></td>
+                            <td><?PHP echo $row['etat']; ?></td>
+                        
+                          <td style="width: 115px">
+                        
+                                <input type="text" value="244" name="id" hidden>
+                           
+                           <a href="ligne_de_commande.php?new_etat=validé&id=<?PHP echo $row['idCommande']; ?>" class="btn btn-success btn-xs navbar-btn"><i class="fa fa-check"></i></a>
+                     
+                               <br></br>   
+                                  <a href="ligne_de_commande.php?new_etat=en_cours&id=<?PHP echo $row['idCommande']; ?>" class="btn btn-warning btn-xs navbar-btn"><i class="fa fa-cog"></i></a>   
+                                
+                                <br></br>  
+                                   <a href="ligne_de_commande.php?new_etat=Annulee&id=<?PHP echo $row['idCommande']; ?>" class="btn btn-danger btn-xs navbar-btn"><i class="fa fa-close"></i></a>  
+                            </form>
+                        </td>
+                  <td><a href="ligne_de_commande.php?del_id=<?PHP echo $row['idCommande']; ?>" class="btn btn-danger navbar-btn">Supprimer</a></td>
+ 
+  
+                        </tr>
+                       
+           <?PHP
+}?>
+                </tbody>
+              </table>
+				
+            </div>
+          </div>
+        </div>
+		
+      </div>
+      <!-- /.container-fluid -->
+
+      <!-- Sticky Footer -->
+      <footer class="sticky-footer">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright © Your Website 2019</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -162,27 +290,15 @@ $chart_data = substr($chart_data, 0, -2);
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Page level plugin JavaScript-->
-  <script src="vendor/chart.js/Chart.min.js"></script>
+  <script src="vendor/datatables/jquery.dataTables.js"></script>
+  <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
 
   <!-- Demo scripts for this page-->
-  <script src="js/demo/chart-area-demo.js"></script>
-  <script src="js/demo/chart-bar-demo.js"></script>
-  <script src="js/demo/chart-pie-demo.js"></script>
+  <script src="js/demo/datatables-demo.js"></script>
 
 </body>
 
 </html>
-<script>
-Morris.Bar({
- element : 'chart',
- data:[<?php echo $chart_data; ?>],
- xkey:'id_client',
- ykeys:['idCommande'],
- labels:'commande',
- hideHover:'Date',
- stacked:true
-});
-</script>
